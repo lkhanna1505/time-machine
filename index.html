@@ -1204,9 +1204,10 @@
       <div class="warning-content">
         <div class="caution-header">⚠️ CAUTION ⚠️</div>
         <div class="skull">💀</div>
-        <div class="warning-text">CRITICAL TIMELINE BREACH DETECTED</div>
+        <!-- Change this text to display on the final screen -->
+        <div class="warning-text">Exam hai tera kal!</div>
         <div class="warning-text" id="doomMessage"></div>
-        <div class="countdown-text">REALITY STABILITY COMPROMISED</div>
+        <div class="countdown-text">Firr bolta hai ki number nhi aaye...</div>
       </div>
     </div>
 
@@ -1315,14 +1316,19 @@
       const warningOverlay = document.getElementById("warningOverlay");
       const doomMessage = document.getElementById("doomMessage");
 
+    //   const funkyEndMessages = [
+    //     "Holy shit! The world's totally screwed in 2026! 🌍💥",
+    //     "Well, fuck time machine—2026 is game over! 🎮💀",
+    //     "Damn! Reality.exe stops working in 2026! 🤖⚡",
+    //     "Oh crap! Universe warranty expires 2026! 🔥🚨",
+    //     "Oh Shoot! There's no world after 2026! 🤖⚡",
+    //     "Oh crap! The world ends in 2026 🔥🚨",
+    //     "Shit just got real—2026 = THE END! 🌪️💣",
+    //   ];
+
+    // Change this to change the middle text of the final screen
       const funkyEndMessages = [
-        "Holy shit! The world's totally screwed in 2026! 🌍💥",
-        "Well, fuck time machine—2026 is game over! 🎮💀",
-        "Damn! Reality.exe stops working in 2026! 🤖⚡",
-        "Oh crap! Universe warranty expires 2026! 🔥🚨",
-        "Oh Shoot! There's no world after 2026! 🤖⚡",
-        "Oh crap! The world ends in 2026 🔥🚨",
-        "Shit just got real—2026 = THE END! 🌪️💣",
+        "Exam ke liye padhle!!!",
       ];
 
       function addLogLine(text, className = "") {
@@ -1617,7 +1623,7 @@
         big.style.fontSize = "clamp(14px, 3.5vw, 18px)";
         big.style.marginTop = "10px";
         big.style.color = "#ff4444";
-        big.textContent = "🌍 WORLD TERMINATION: 2026-03-15 14:47:33 UTC 🌍";
+        big.textContent = "🌍 Haan bhai? Khule notes ya nhi?? 🌍";
         log.appendChild(big);
         log.parentElement.scrollTop = log.parentElement.scrollHeight;
 
