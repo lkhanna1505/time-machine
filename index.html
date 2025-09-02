@@ -98,8 +98,8 @@
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        width: 400px;
-        height: 400px;
+        width: clamp(200px, 60vw, 400px);
+        height: clamp(200px, 60vw, 400px);
         opacity: 0.8;
         pointer-events: none;
       }
@@ -134,8 +134,8 @@
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        width: 80px;
-        height: 80px;
+        width: clamp(40px, 20%, 80px);
+        height: clamp(40px, 20%, 80px);
         border-radius: 50%;
         background: radial-gradient(circle, var(--neon1), var(--neon2));
         box-shadow: 0 0 40px var(--neon1), 0 0 80px var(--neon2);
@@ -179,7 +179,7 @@
         position: relative;
         inset: 0;
         width: 100%;
-        height: 100%;
+        height: 100vh;
         display: grid;
         grid-template-rows: auto 1fr auto;
       }
@@ -188,8 +188,8 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 16px;
-        padding: 14px 18px;
+        gap: clamp(8px, 3vw, 16px);
+        padding: clamp(8px, 2vw, 14px) clamp(12px, 3vw, 18px);
         background: linear-gradient(
           180deg,
           rgba(255, 255, 255, 0.06),
@@ -197,15 +197,17 @@
         );
         border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         backdrop-filter: blur(8px);
+        flex-wrap: wrap;
       }
       .brand {
         display: flex;
         align-items: center;
-        gap: 12px;
+        gap: clamp(6px, 2vw, 12px);
+        min-width: 0;
       }
       .logo {
-        width: 32px;
-        height: 32px;
+        width: clamp(24px, 6vw, 32px);
+        height: clamp(24px, 6vw, 32px);
         border-radius: 50%;
         background: conic-gradient(
           from 0deg,
@@ -215,43 +217,49 @@
         );
         box-shadow: 0 0 18px var(--neon1), 0 0 28px var(--neon2);
         filter: blur(0.3px);
+        flex-shrink: 0;
       }
       .title {
         font-weight: 800;
-        letter-spacing: 2px;
+        letter-spacing: 1.5px;
         text-transform: uppercase;
-        font-size: 14px;
+        font-size: clamp(10px, 2.5vw, 14px);
         color: #dff7ff;
         text-shadow: 0 0 6px var(--neon1), 0 0 14px var(--neon2);
+        white-space: nowrap;
       }
 
       .controls {
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: clamp(6px, 2vw, 10px);
+        flex-wrap: wrap;
       }
       .input {
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: clamp(6px, 2vw, 10px);
         background: var(--glass);
         border: 1px solid rgba(255, 255, 255, 0.12);
-        padding: 8px 12px;
-        border-radius: 10px;
+        padding: clamp(6px, 1.5vw, 8px) clamp(8px, 2vw, 12px);
+        border-radius: clamp(6px, 2vw, 10px);
         box-shadow: inset 0 0 18px rgba(0, 229, 255, 0.08),
           0 8px 30px rgba(0, 0, 0, 0.25);
+        min-width: 0;
       }
       .input input {
-        width: 130px;
+        width: clamp(100px, 25vw, 130px);
         background: transparent;
         border: none;
         outline: none;
         color: var(--fg);
-        font-size: 16px;
+        font-size: clamp(14px, 3vw, 16px);
         letter-spacing: 1px;
+        min-width: 0;
       }
       .input input::placeholder {
         color: #9eb7cc;
+        font-size: clamp(12px, 2.5vw, 14px);
       }
       .btn {
         appearance: none;
@@ -262,14 +270,16 @@
         );
         color: #eaffff;
         border: 1px solid rgba(255, 255, 255, 0.15);
-        border-radius: 10px;
-        padding: 10px 14px;
+        border-radius: clamp(6px, 2vw, 10px);
+        padding: clamp(8px, 2vw, 10px) clamp(10px, 2.5vw, 14px);
         font-weight: 700;
         letter-spacing: 1px;
         cursor: pointer;
         transition: transform 0.08s ease, box-shadow 0.2s ease;
         box-shadow: 0 0 12px rgba(0, 229, 255, 0.35),
           inset 0 0 18px rgba(122, 0, 255, 0.25);
+        font-size: clamp(12px, 2.8vw, 14px);
+        white-space: nowrap;
       }
       .btn:hover {
         transform: translateY(-1px) scale(1.02);
@@ -286,19 +296,19 @@
         z-index: 1;
         display: grid;
         place-items: center;
-        padding: 18px;
+        padding: clamp(12px, 3vw, 18px);
       }
       .console {
-        width: min(980px, 94vw);
-        min-height: 380px;
+        width: min(980px, 95vw);
+        min-height: clamp(300px, 60vh, 380px);
         background: linear-gradient(
           180deg,
           rgba(255, 255, 255, 0.05),
           rgba(255, 255, 255, 0.02)
         );
         border: 1px solid rgba(255, 255, 255, 0.12);
-        border-radius: 18px;
-        padding: 18px 18px 24px;
+        border-radius: clamp(12px, 3vw, 18px);
+        padding: clamp(12px, 3vw, 18px) clamp(12px, 3vw, 18px) clamp(16px, 4vw, 24px);
         box-shadow: inset 0 0 60px rgba(0, 229, 255, 0.06),
           inset 0 0 120px rgba(122, 0, 255, 0.05),
           0 30px 80px rgba(0, 0, 0, 0.35);
@@ -310,27 +320,29 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 12px;
-        padding: 10px 14px;
+        gap: clamp(6px, 2vw, 12px);
+        padding: clamp(8px, 2vw, 10px) clamp(10px, 2.5vw, 14px);
         border-bottom: 1px dashed rgba(255, 255, 255, 0.12);
+        flex-wrap: wrap;
       }
       .hud .pill {
-        font-size: 12px;
+        font-size: clamp(10px, 2.2vw, 12px);
         color: #d5f7ff;
         background: rgba(0, 229, 255, 0.08);
         border: 1px solid rgba(0, 229, 255, 0.2);
-        padding: 6px 10px;
+        padding: clamp(4px, 1vw, 6px) clamp(6px, 1.5vw, 10px);
         border-radius: 999px;
         text-shadow: 0 0 6px rgba(0, 229, 255, 0.7);
+        white-space: nowrap;
       }
 
       .screen {
         position: relative;
         display: grid;
         align-content: start;
-        gap: 8px;
-        padding: 16px;
-        height: 320px;
+        gap: clamp(6px, 1.5vw, 8px);
+        padding: clamp(12px, 3vw, 16px);
+        height: clamp(250px, 45vh, 320px);
         overflow: hidden;
         mask-image: linear-gradient(
           180deg,
@@ -376,7 +388,7 @@
       .log {
         font-family: ui-monospace, SFMono-Regular, Menlo, Consolas,
           "Liberation Mono", monospace;
-        font-size: 13px;
+        font-size: clamp(11px, 2.5vw, 13px);
         line-height: 1.4;
         color: #d7f3ff;
         text-shadow: 0 0 8px rgba(0, 229, 255, 0.3);
@@ -387,6 +399,7 @@
         transform: translateY(10px);
         animation: reveal 0.6s ease forwards;
         white-space: pre-wrap;
+        word-break: break-word;
       }
       @keyframes reveal {
         to {
@@ -417,13 +430,14 @@
         color: #88ddff;
         font-family: "Times New Roman", serif;
         font-style: italic;
+        font-size: clamp(10px, 2.2vw, 12px);
       }
       .calc {
         color: #aaffaa;
       }
       .scrap {
         color: #666888;
-        font-size: 11px;
+        font-size: clamp(9px, 2vw, 11px);
         opacity: 0.6;
       }
 
@@ -439,7 +453,7 @@
       }
 
       .progress {
-        height: 8px;
+        height: clamp(6px, 1.5vw, 8px);
         background: linear-gradient(
           90deg,
           rgba(255, 255, 255, 0.05),
@@ -448,7 +462,7 @@
         border: 1px solid rgba(255, 255, 255, 0.12);
         border-radius: 999px;
         overflow: hidden;
-        margin-top: 8px;
+        margin-top: clamp(6px, 1.5vw, 8px);
       }
       .bar {
         height: 100%;
@@ -462,8 +476,8 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 12px;
-        padding: 10px 18px;
+        gap: clamp(8px, 2vw, 12px);
+        padding: clamp(8px, 2vw, 10px) clamp(12px, 3vw, 18px);
         background: linear-gradient(
           0deg,
           rgba(255, 255, 255, 0.06),
@@ -471,9 +485,10 @@
         );
         border-top: 1px solid rgba(255, 255, 255, 0.08);
         backdrop-filter: blur(8px);
+        flex-wrap: wrap;
       }
       .hint {
-        font-size: 12px;
+        font-size: clamp(10px, 2.2vw, 12px);
         color: #bfe9ff;
         opacity: 0.85;
       }
@@ -541,50 +556,52 @@
         align-items: center;
         justify-content: center;
         animation: warningFadeIn 2s ease-out;
+        padding: clamp(16px, 4vw, 20px);
       }
 
       .warning-content {
         text-align: center;
-        max-width: 90vw;
+        max-width: 95vw;
         animation: warningShake 0.8s ease-in-out infinite;
       }
 
       .caution-header {
-        font-size: clamp(3rem, 10vw, 8rem);
+        font-size: clamp(2rem, 8vw, 8rem);
         font-weight: 900;
-        letter-spacing: 4px;
+        letter-spacing: clamp(2px, 1vw, 4px);
         color: var(--danger);
         text-transform: uppercase;
-        margin-bottom: 20px;
+        margin-bottom: clamp(12px, 3vw, 20px);
         text-shadow: 0 0 20px var(--danger), 0 0 40px var(--danger),
           0 0 60px var(--danger);
         animation: cautionBlink 1.5s ease-in-out infinite alternate;
       }
 
       .warning-text {
-        font-size: clamp(1.5rem, 4vw, 3rem);
+        font-size: clamp(1rem, 4vw, 3rem);
         font-weight: 700;
-        letter-spacing: 2px;
+        letter-spacing: clamp(1px, 0.5vw, 2px);
         color: #ff6666;
-        margin: 30px 0;
+        margin: clamp(16px, 4vw, 30px) 0;
         line-height: 1.3;
         text-shadow: 0 0 10px #ff6666, 0 0 20px #ff6666;
         animation: textFlicker 2.5s ease-in-out infinite;
+        word-break: break-word;
       }
 
       .countdown-text {
-        font-size: clamp(1rem, 3vw, 2rem);
+        font-size: clamp(0.8rem, 3vw, 2rem);
         font-weight: 400;
-        letter-spacing: 1px;
+        letter-spacing: clamp(0.5px, 0.3vw, 1px);
         color: #ffaaaa;
-        margin-top: 20px;
+        margin-top: clamp(12px, 3vw, 20px);
         text-shadow: 0 0 8px #ffaaaa;
         animation: countdownPulse 3s ease-in-out infinite;
       }
 
       .skull {
-        font-size: clamp(4rem, 12vw, 10rem);
-        margin: 20px 0;
+        font-size: clamp(3rem, 10vw, 10rem);
+        margin: clamp(12px, 3vw, 20px) 0;
         animation: skullSpin 4s linear infinite;
         filter: drop-shadow(0 0 30px var(--danger));
       }
@@ -694,21 +711,99 @@
         }
       }
 
-      @media (max-width: 640px) {
+      /* Mobile-specific optimizations */
+      @media (max-width: 768px) {
+        .header {
+          flex-direction: column;
+          gap: 12px;
+        }
+        
+        .controls {
+          width: 100%;
+          justify-content: center;
+        }
+        
+        .input {
+          flex: 1;
+          max-width: 200px;
+        }
+        
+        .input input {
+          width: 100%;
+          font-size: 16px; /* Prevents zoom on iOS */
+        }
+        
+        .console {
+          margin: 0;
+          border-radius: 12px;
+        }
+        
+        .screen {
+          height: clamp(200px, 35vh, 250px);
+        }
+        
+        .hud {
+          flex-direction: column;
+          gap: 8px;
+          align-items: center;
+        }
+        
+        .footer {
+          flex-direction: column;
+          gap: 8px;
+          text-align: center;
+        }
+      }
+
+      @media (max-width: 480px) {
         .title {
           display: none;
         }
+        
+        .input input::placeholder {
+          font-size: 14px;
+        }
+        
+        .btn {
+          padding: 10px 12px;
+          font-size: 13px;
+        }
+        
+        .wormhole {
+          width: clamp(150px, 50vw, 250px);
+          height: clamp(150px, 50vw, 250px);
+        }
+        
+        .log {
+          font-size: 11px;
+        }
+        
+        .equation {
+          font-size: 10px;
+        }
+        
+        .scrap {
+          font-size: 9px;
+        }
+      }
+
+      /* Landscape orientation adjustments for phones */
+      @media (max-height: 500px) and (orientation: landscape) {
+        .console {
+          min-height: 250px;
+        }
+        
         .screen {
-          height: 300px;
+          height: 180px;
         }
-        .caution-header {
-          font-size: 2.5rem;
+        
+        .wormhole {
+          width: 200px;
+          height: 200px;
         }
-        .warning-text {
-          font-size: 1.2rem;
-        }
-        .countdown-text {
-          font-size: 0.9rem;
+        
+        header, footer {
+          padding: 8px 12px;
         }
       }
     </style>
@@ -1046,7 +1141,7 @@
 
         const big = document.createElement("div");
         big.className = "entry glow";
-        big.style.fontSize = "18px";
+        big.style.fontSize = "clamp(14px, 3.5vw, 18px)";
         big.style.marginTop = "10px";
         big.style.color = "#ff4444";
         big.textContent = "🌍 WORLD TERMINATION: 2026-03-15 14:47:33 UTC 🌍";
