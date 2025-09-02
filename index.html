@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Time Travel Console</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap");
+
+      :root {
+        --bg: #05060a;
+        --fg: #e6f3ff;
+        --neon1: #00e5ff;
+        --neon2: #7a00ff;
+        --glass: rgba(255, 255, 255, 0.06);
+        --danger: #ff0040;
+        --warning: #ffaa00;
+        --success: #00ff88;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        background: radial-gradient(
+          1200px 1200px at 50% 120%,
+          #0a0f1a 0%,
+          #05060a 40%,
+          #020308 100%
+        );
+        color: var(--fg);
+        overflow: hidden;
+        font-family: "Orbitron", ui-sans-serif, system-ui;
+      }
+
+      /* Animated starfield background */
+      .stars,
+      .stars2,
+      .stars3 {
+        position: absolute;
+        inset: 0;
+        background-repeat: repeat;
+        pointer-events: none;
+        mix-blend-mode: screen;
+        opacity: 0.3;
+      }
+      .stars {
+        background-image: radial-gradient(
+            2px 2px at 20px 30px,
+            #7a9fff,
+            transparent 60%
+          ),
+          radial-gradient(1px 1px at 40px 70px, #b3d1ff, transparent 60%),
+          radial-gradient(2px 2px at 130px 90px, #88aaff, transparent 60%);
+        background-size: 200px 200px;
+        animation: drift 90s linear infinite;
+      }
+      .stars2 {
+        background-image: radial-gradient(
+            1px 1px at 60px 50px,
+            #7df,
+            transparent 60%
+          ),
+          radial-gradient(2px 2px at 90px 110px, #aef, transparent 60%),
+          radial-gradient(1px 1px at 160px 140px, #9cf, transparent 60%);
+        background-size: 250px 250px;
+        animation: drift 140s linear infinite reverse;
+        opacity: 0.25;
+      }
+      .stars3 {
+        background-image: radial-gradient(
+            1px 1px at 10px 10px,
+            #9ef,
+            transparent 60%
+          ),
+          radial-gradient(1px 1px at 70px 120px, #c9f, transparent 60%),
+          radial-gradient(2px 2px at 190px 100px, #8ff, transparent 60%);
+        background-size: 300px 300px;
+        animation: drift 200s linear infinite;
+        opacity: 0.2;
+      }
+      @keyframes drift {
+        from {
+          background-position: 0 0;
+        }
+        to {
+          background-position: -10000px 5000px;
+        }
+      }
+
+      /* CSS-only wormhole effect */
+      .wormhole {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 400px;
+        height: 400px;
+        opacity: 0.8;
+        pointer-events: none;
+      }
+      .tunnel {
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        background: conic-gradient(
+          from 0deg,
+          var(--neon1),
+          var(--neon2),
+          transparent,
+          var(--neon1)
+        );
+        animation: spin 10s linear infinite;
+      }
+      .tunnel::before {
+        content: "";
+        position: absolute;
+        inset: 20px;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle,
+          transparent 40%,
+          var(--neon2) 70%,
+          transparent 100%
+        );
+        animation: pulse 3s ease-in-out infinite alternate;
+      }
+      .core {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: radial-gradient(circle, var(--neon1), var(--neon2));
+        box-shadow: 0 0 40px var(--neon1), 0 0 80px var(--neon2);
+        animation: coreSpin 5s linear infinite,
+          coreGlow 2s ease-in-out infinite alternate;
+      }
+      @keyframes spin {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      @keyframes pulse {
+        from {
+          opacity: 0.3;
+        }
+        to {
+          opacity: 0.8;
+        }
+      }
+      @keyframes coreSpin {
+        from {
+          transform: translate(-50%, -50%) rotate(0deg);
+        }
+        to {
+          transform: translate(-50%, -50%) rotate(-360deg);
+        }
+      }
+      @keyframes coreGlow {
+        from {
+          box-shadow: 0 0 40px var(--neon1), 0 0 80px var(--neon2);
+        }
+        to {
+          box-shadow: 0 0 60px var(--neon1), 0 0 120px var(--neon2);
+        }
+      }
+
+      .wrap {
+        position: relative;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+      }
+
+      header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 14px 18px;
+        background: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.06),
+          transparent
+        );
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(8px);
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .logo {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: conic-gradient(
+          from 0deg,
+          var(--neon1),
+          var(--neon2),
+          var(--neon1)
+        );
+        box-shadow: 0 0 18px var(--neon1), 0 0 28px var(--neon2);
+        filter: blur(0.3px);
+      }
+      .title {
+        font-weight: 800;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        font-size: 14px;
+        color: #dff7ff;
+        text-shadow: 0 0 6px var(--neon1), 0 0 14px var(--neon2);
+      }
+
+      .controls {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .input {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: var(--glass);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        padding: 8px 12px;
+        border-radius: 10px;
+        box-shadow: inset 0 0 18px rgba(0, 229, 255, 0.08),
+          0 8px 30px rgba(0, 0, 0, 0.25);
+      }
+      .input input {
+        width: 130px;
+        background: transparent;
+        border: none;
+        outline: none;
+        color: var(--fg);
+        font-size: 16px;
+        letter-spacing: 1px;
+      }
+      .input input::placeholder {
+        color: #9eb7cc;
+      }
+      .btn {
+        appearance: none;
+        background: radial-gradient(
+          60% 120% at 50% 0%,
+          rgba(0, 229, 255, 0.4),
+          rgba(122, 0, 255, 0.18)
+        );
+        color: #eaffff;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 10px;
+        padding: 10px 14px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        cursor: pointer;
+        transition: transform 0.08s ease, box-shadow 0.2s ease;
+        box-shadow: 0 0 12px rgba(0, 229, 255, 0.35),
+          inset 0 0 18px rgba(122, 0, 255, 0.25);
+      }
+      .btn:hover {
+        transform: translateY(-1px) scale(1.02);
+        box-shadow: 0 0 18px rgba(0, 229, 255, 0.55),
+          0 0 36px rgba(122, 0, 255, 0.45),
+          inset 0 0 28px rgba(122, 0, 255, 0.3);
+      }
+      .btn:active {
+        transform: translateY(0) scale(0.99);
+      }
+
+      main {
+        position: relative;
+        z-index: 1;
+        display: grid;
+        place-items: center;
+        padding: 18px;
+      }
+      .console {
+        width: min(980px, 94vw);
+        min-height: 380px;
+        background: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.05),
+          rgba(255, 255, 255, 0.02)
+        );
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 18px;
+        padding: 18px 18px 24px;
+        box-shadow: inset 0 0 60px rgba(0, 229, 255, 0.06),
+          inset 0 0 120px rgba(122, 0, 255, 0.05),
+          0 30px 80px rgba(0, 0, 0, 0.35);
+        backdrop-filter: blur(8px);
+        overflow: hidden;
+      }
+
+      .hud {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 10px 14px;
+        border-bottom: 1px dashed rgba(255, 255, 255, 0.12);
+      }
+      .hud .pill {
+        font-size: 12px;
+        color: #d5f7ff;
+        background: rgba(0, 229, 255, 0.08);
+        border: 1px solid rgba(0, 229, 255, 0.2);
+        padding: 6px 10px;
+        border-radius: 999px;
+        text-shadow: 0 0 6px rgba(0, 229, 255, 0.7);
+      }
+
+      .screen {
+        position: relative;
+        display: grid;
+        align-content: start;
+        gap: 8px;
+        padding: 16px;
+        height: 320px;
+        overflow: hidden;
+        mask-image: linear-gradient(
+          180deg,
+          transparent 0px,
+          black 20px,
+          black calc(100% - 20px),
+          transparent 100%
+        );
+      }
+      .lines {
+        position: absolute;
+        inset: 0;
+        background: repeating-linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.05) 0 1px,
+          transparent 1px 3px
+        );
+        mix-blend-mode: soft-light;
+        pointer-events: none;
+      }
+      .scan {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          180deg,
+          transparent,
+          rgba(0, 229, 255, 0.08),
+          transparent
+        );
+        animation: scan 3s linear infinite;
+        opacity: 0.6;
+        pointer-events: none;
+      }
+      @keyframes scan {
+        from {
+          transform: translateY(-100%);
+        }
+        to {
+          transform: translateY(100%);
+        }
+      }
+
+      .log {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas,
+          "Liberation Mono", monospace;
+        font-size: 13px;
+        line-height: 1.4;
+        color: #d7f3ff;
+        text-shadow: 0 0 8px rgba(0, 229, 255, 0.3);
+        filter: drop-shadow(0 0 2px rgba(0, 229, 255, 0.2));
+      }
+      .log .entry {
+        opacity: 0;
+        transform: translateY(10px);
+        animation: reveal 0.6s ease forwards;
+        white-space: pre-wrap;
+      }
+      @keyframes reveal {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .glow {
+        color: #e9fcff;
+        text-shadow: 0 0 8px #fff, 0 0 18px var(--neon1), 0 0 36px var(--neon2),
+          0 0 68px var(--neon2);
+        animation: neonPulse 2.2s ease-in-out infinite alternate;
+      }
+      .success {
+        color: var(--success);
+        text-shadow: 0 0 8px var(--success), 0 0 16px var(--success);
+      }
+      .warning {
+        color: var(--warning);
+        text-shadow: 0 0 8px var(--warning), 0 0 16px var(--warning);
+      }
+      .danger {
+        color: var(--danger);
+        text-shadow: 0 0 8px var(--danger), 0 0 16px var(--danger);
+      }
+      .equation {
+        color: #88ddff;
+        font-family: "Times New Roman", serif;
+        font-style: italic;
+      }
+      .calc {
+        color: #aaffaa;
+      }
+      .scrap {
+        color: #666888;
+        font-size: 11px;
+        opacity: 0.6;
+      }
+
+      @keyframes neonPulse {
+        from {
+          text-shadow: 0 0 6px #fff, 0 0 12px var(--neon1),
+            0 0 22px var(--neon2), 0 0 44px var(--neon2);
+        }
+        to {
+          text-shadow: 0 0 12px #fff, 0 0 22px var(--neon1),
+            0 0 46px var(--neon2), 0 0 88px var(--neon2);
+        }
+      }
+
+      .progress {
+        height: 8px;
+        background: linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0.05),
+          rgba(255, 255, 255, 0.02)
+        );
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 999px;
+        overflow: hidden;
+        margin-top: 8px;
+      }
+      .bar {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, var(--neon1), var(--neon2));
+        box-shadow: 0 0 8px var(--neon1), 0 0 16px var(--neon2);
+        transition: width 0.25s ease;
+      }
+
+      footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 10px 18px;
+        background: linear-gradient(
+          0deg,
+          rgba(255, 255, 255, 0.06),
+          transparent
+        );
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(8px);
+      }
+      .hint {
+        font-size: 12px;
+        color: #bfe9ff;
+        opacity: 0.85;
+      }
+
+      .glitch {
+        position: absolute;
+        inset: 0;
+        background: repeating-linear-gradient(
+          180deg,
+          rgba(255, 0, 70, 0.08) 0 3px,
+          transparent 3px 6px
+        );
+        mix-blend-mode: screen;
+        pointer-events: none;
+        animation: glitch 1.2s steps(6, end) 1 both;
+      }
+      @keyframes glitch {
+        0% {
+          clip-path: inset(10% 0 60% 0);
+          transform: translate(-4px, -2px);
+          opacity: 0.6;
+        }
+        20% {
+          clip-path: inset(40% 0 40% 0);
+          transform: translate(4px, 2px);
+          opacity: 0.9;
+        }
+        40% {
+          clip-path: inset(70% 0 20% 0);
+          transform: translate(-3px, 3px);
+          opacity: 0.7;
+        }
+        60% {
+          clip-path: inset(20% 0 70% 0);
+          transform: translate(2px, -3px);
+          opacity: 0.9;
+        }
+        80% {
+          clip-path: inset(50% 0 45% 0);
+          transform: translate(-1px, 1px);
+          opacity: 0.8;
+        }
+        100% {
+          clip-path: inset(0 0 0 0);
+          transform: translate(0, 0);
+          opacity: 0;
+        }
+      }
+
+      .speed-up .tunnel {
+        animation-duration: 2s !important;
+      }
+      .speed-up .core {
+        animation-duration: 1s !important;
+      }
+
+      /* FULL SCREEN WARNING OVERLAY */
+      .warning-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        background: rgba(0, 0, 0, 0.95);
+        backdrop-filter: blur(10px);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        animation: warningFadeIn 2s ease-out;
+      }
+
+      .warning-content {
+        text-align: center;
+        max-width: 90vw;
+        animation: warningShake 0.8s ease-in-out infinite;
+      }
+
+      .caution-header {
+        font-size: clamp(3rem, 10vw, 8rem);
+        font-weight: 900;
+        letter-spacing: 4px;
+        color: var(--danger);
+        text-transform: uppercase;
+        margin-bottom: 20px;
+        text-shadow: 0 0 20px var(--danger), 0 0 40px var(--danger),
+          0 0 60px var(--danger);
+        animation: cautionBlink 1.5s ease-in-out infinite alternate;
+      }
+
+      .warning-text {
+        font-size: clamp(1.5rem, 4vw, 3rem);
+        font-weight: 700;
+        letter-spacing: 2px;
+        color: #ff6666;
+        margin: 30px 0;
+        line-height: 1.3;
+        text-shadow: 0 0 10px #ff6666, 0 0 20px #ff6666;
+        animation: textFlicker 2.5s ease-in-out infinite;
+      }
+
+      .countdown-text {
+        font-size: clamp(1rem, 3vw, 2rem);
+        font-weight: 400;
+        letter-spacing: 1px;
+        color: #ffaaaa;
+        margin-top: 20px;
+        text-shadow: 0 0 8px #ffaaaa;
+        animation: countdownPulse 3s ease-in-out infinite;
+      }
+
+      .skull {
+        font-size: clamp(4rem, 12vw, 10rem);
+        margin: 20px 0;
+        animation: skullSpin 4s linear infinite;
+        filter: drop-shadow(0 0 30px var(--danger));
+      }
+
+      @keyframes warningFadeIn {
+        from {
+          opacity: 0;
+          transform: scale(0.8);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+      @keyframes warningShake {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        10% {
+          transform: translateX(-2px);
+        }
+        20% {
+          transform: translateX(2px);
+        }
+        30% {
+          transform: translateX(-1px);
+        }
+        40% {
+          transform: translateX(1px);
+        }
+        50% {
+          transform: translateX(-2px);
+        }
+        60% {
+          transform: translateX(2px);
+        }
+        70% {
+          transform: translateX(-1px);
+        }
+        80% {
+          transform: translateX(1px);
+        }
+        90% {
+          transform: translateX(-2px);
+        }
+      }
+      @keyframes cautionBlink {
+        0% {
+          text-shadow: 0 0 20px var(--danger), 0 0 40px var(--danger),
+            0 0 60px var(--danger);
+          color: var(--danger);
+        }
+        100% {
+          text-shadow: 0 0 40px #ff8888, 0 0 80px #ff8888, 0 0 120px #ff8888;
+          color: #ff8888;
+        }
+      }
+      @keyframes textFlicker {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.7;
+        }
+        75% {
+          opacity: 0.9;
+        }
+        85% {
+          opacity: 0.6;
+        }
+      }
+      @keyframes countdownPulse {
+        0%,
+        100% {
+          transform: scale(1);
+          opacity: 0.8;
+        }
+        50% {
+          transform: scale(1.05);
+          opacity: 1;
+        }
+      }
+      @keyframes skullSpin {
+        from {
+          transform: rotate(0deg) scale(1);
+        }
+        50% {
+          transform: rotate(180deg) scale(1.1);
+        }
+        to {
+          transform: rotate(360deg) scale(1);
+        }
+      }
+
+      .danger-mode {
+        animation: screenFlash 0.3s ease-in-out infinite !important;
+      }
+      @keyframes screenFlash {
+        0%,
+        100% {
+          filter: hue-rotate(0deg) brightness(1);
+        }
+        50% {
+          filter: hue-rotate(320deg) brightness(1.3);
+        }
+      }
+
+      @media (max-width: 640px) {
+        .title {
+          display: none;
+        }
+        .screen {
+          height: 300px;
+        }
+        .caution-header {
+          font-size: 2.5rem;
+        }
+        .warning-text {
+          font-size: 1.2rem;
+        }
+        .countdown-text {
+          font-size: 0.9rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="stars"></div>
+    <div class="stars2"></div>
+    <div class="stars3"></div>
+
+    <!-- Full Screen Warning Overlay -->
+    <div class="warning-overlay" id="warningOverlay">
+      <div class="warning-content">
+        <div class="caution-header">⚠️ CAUTION ⚠️</div>
+        <div class="skull">💀</div>
+        <div class="warning-text">CRITICAL TIMELINE BREACH DETECTED</div>
+        <div class="warning-text" id="doomMessage"></div>
+        <div class="countdown-text">REALITY STABILITY COMPROMISED</div>
+      </div>
+    </div>
+
+    <!-- CSS-only wormhole effect -->
+    <div class="wormhole" id="wormhole">
+      <div class="tunnel"></div>
+      <div class="core"></div>
+    </div>
+
+    <div class="wrap">
+      <header>
+        <div class="brand">
+          <div class="logo"></div>
+          <div class="title">ChronoShift v3.7</div>
+        </div>
+        <div class="controls">
+          <div class="input">
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              aria-hidden="true"
+            >
+              <path
+                d="M6 2v4M18 2v4M3.5 9h17M21 8.5v10a3.5 3.5 0 0 1-3.5 3.5h-11A3.5 3.5 0 0 1 3 18.5v-10"
+                stroke="#8ee8ff"
+                stroke-width="1.5"
+                stroke-linecap="round"
+              />
+            </svg>
+            <input
+              id="yearInput"
+              type="number"
+              inputmode="numeric"
+              placeholder="Enter year (e.g. 1985)"
+            />
+          </div>
+          <button id="goBtn" class="btn">Initiate Jump</button>
+        </div>
+      </header>
+
+      <main>
+        <section class="console">
+          <div class="hud">
+            <div class="pill">QUANTUM TUNNEL ONLINE</div>
+            <div class="pill">STABILITY: <span id="stability">99.9%</span></div>
+            <div class="pill">TARGET: <span id="target">--</span></div>
+          </div>
+          <div class="screen">
+            <div class="lines"></div>
+            <div class="scan"></div>
+            <div id="log" class="log">
+              <div class="entry glow">Awaiting temporal coordinates...</div>
+            </div>
+            <div class="progress"><div id="bar" class="bar"></div></div>
+          </div>
+        </section>
+      </main>
+
+      <footer>
+        <div class="hint">
+          Tip: The wormhole responds to temporal energy fluctuations.
+        </div>
+        <div class="hint">
+          Chrono Ethics Notice: Travel responsibly across timelines.
+        </div>
+      </footer>
+    </div>
+
+    <script>
+      const yearInput = document.getElementById("yearInput");
+      const goBtn = document.getElementById("goBtn");
+      const log = document.getElementById("log");
+      const bar = document.getElementById("bar");
+      const target = document.getElementById("target");
+      const stability = document.getElementById("stability");
+      const wormhole = document.getElementById("wormhole");
+      const warningOverlay = document.getElementById("warningOverlay");
+      const doomMessage = document.getElementById("doomMessage");
+
+      const funkyEndMessages = [
+        "Holy shit! The world's totally screwed in 2026! 🌍💥",
+        "Well, fuck me sideways—2026 is game over! 🎮💀",
+        "Damn! Reality.exe stops working in 2026! 🤖⚡",
+        "Oh crap! Universe warranty expires 2026! 🔥🚨",
+        "Shit just got real—2026 = THE END! 🌪️💣",
+      ];
+
+      function addLogLine(text, className = "") {
+        const div = document.createElement("div");
+        div.className = "entry " + className;
+        div.textContent = text;
+        log.appendChild(div);
+        log.parentElement.scrollTop = log.parentElement.scrollHeight;
+      }
+
+      function setProgress(p) {
+        bar.style.width = `${p}%`;
+      }
+      function setStability(val) {
+        stability.textContent = `${val.toFixed(1)}%`;
+      }
+
+      function glitchFlash() {
+        const g = document.createElement("div");
+        g.className = "glitch";
+        document.querySelector(".console").appendChild(g);
+        setTimeout(() => g.remove(), 1200);
+      }
+
+      function showFullScreenWarning() {
+        document.body.classList.add("danger-mode");
+        warningOverlay.style.display = "flex";
+        const randomMessage =
+          funkyEndMessages[Math.floor(Math.random() * funkyEndMessages.length)];
+        doomMessage.textContent = randomMessage;
+
+        let shakeCount = 0;
+        const shakeInterval = setInterval(() => {
+          document.body.style.transform = `translate(${
+            Math.random() * 4 - 2
+          }px, ${Math.random() * 4 - 2}px)`;
+          shakeCount++;
+          if (shakeCount > 30) {
+            clearInterval(shakeInterval);
+            document.body.style.transform = "";
+          }
+        }, 100);
+      }
+
+      async function performTimeCalculations(targetYear) {
+        const currentYear = 2025;
+        const yearDiff = Math.abs(targetYear - currentYear);
+
+        addLogLine("🔬 Initializing temporal physics engine...", "glow");
+        await delay(1200);
+
+        addLogLine("📐 Loading Einstein-Rosen bridge equations...", "");
+        await delay(800);
+
+        addLogLine("   > Special Relativity: Δt = Δt₀/√(1-v²/c²)", "equation");
+        await delay(1500);
+
+        addLogLine(
+          "   > Gravitational Time Dilation: Δt = Δt₀√(1-2GM/rc²)",
+          "equation"
+        );
+        await delay(1500);
+
+        addLogLine(
+          "📊 Calculating required velocity for time shift...",
+          "calc"
+        );
+        await delay(1000);
+
+        // Fake realistic calculations
+        const velocity = Math.min(0.95 * 299792458, yearDiff * 12847291.2);
+        const lorentzFactor =
+          1 / Math.sqrt(1 - Math.pow(velocity / 299792458, 2));
+
+        addLogLine("   > cpu_cores_engaged: 64/64", "scrap");
+        addLogLine("   > memory_allocated: 847.3TB", "scrap");
+        await delay(600);
+
+        addLogLine(
+          `   > Required velocity: ${((velocity / 299792458) * 100).toFixed(
+            2
+          )}% speed of light`,
+          "calc"
+        );
+        await delay(1200);
+
+        addLogLine(
+          `   > Lorentz factor: γ = ${lorentzFactor.toFixed(6)}`,
+          "calc"
+        );
+        await delay(1000);
+
+        addLogLine("🌌 Computing wormhole stability parameters...", "");
+        await delay(900);
+
+        addLogLine(
+          "   > Morris-Thorne metric: ds² = -c²dt² + dl² + r²(dθ²+sin²θdφ²)",
+          "equation"
+        );
+        await delay(1800);
+
+        const exoticMatter = yearDiff * 4.7e23;
+        addLogLine(
+          `   > Exotic matter required: ${exoticMatter.toExponential(2)} kg`,
+          "warning"
+        );
+        await delay(1000);
+
+        addLogLine("   > quantum_fluctuations: nominal", "scrap");
+        addLogLine("   > spacetime_curvature: within limits", "scrap");
+        await delay(700);
+
+        addLogLine("🔄 Solving Gödel universe rotation...", "calc");
+        await delay(1100);
+
+        addLogLine("   > Closed timelike curves detected", "success");
+        await delay(800);
+
+        addLogLine(
+          "   > Chronology protection conjecture: BYPASSED",
+          "success"
+        );
+        await delay(1200);
+
+        addLogLine("⚡ Initializing quantum entanglement matrix...", "");
+        addLogLine("   > entanglement_pairs: 2.4×10¹⁸", "scrap");
+        addLogLine("   > decoherence_rate: 0.003%", "scrap");
+        await delay(1000);
+
+        addLogLine(
+          `✅ SOLUTION FOUND: Temporal displacement to ${targetYear} is possible!`,
+          "success"
+        );
+        await delay(1500);
+
+        return { velocity, lorentzFactor, exoticMatter };
+      }
+
+      async function startTimeTravel(targetYear, calculations) {
+        addLogLine("🚀 Engaging temporal drive systems...", "glow");
+        await delay(1000);
+
+        addLogLine("   > Accelerating to relativistic speeds...", "calc");
+        await delay(800);
+
+        addLogLine(
+          `   > Current velocity: ${(
+            (calculations.velocity / 299792458) *
+            45
+          ).toFixed(1)}%c`,
+          "scrap"
+        );
+        await delay(600);
+
+        addLogLine(
+          `   > Current velocity: ${(
+            (calculations.velocity / 299792458) *
+            73
+          ).toFixed(1)}%c`,
+          "scrap"
+        );
+        await delay(500);
+
+        addLogLine(
+          `   > Current velocity: ${(
+            (calculations.velocity / 299792458) *
+            91
+          ).toFixed(1)}%c`,
+          "scrap"
+        );
+        await delay(400);
+
+        addLogLine("🌀 Entering chronoton field...", "");
+        await delay(1200);
+
+        addLogLine("   > Spacetime coordinates locked", "success");
+        addLogLine("   > Causal loop established", "success");
+        await delay(1000);
+
+        addLogLine("📡 Initiating temporal tunnel sequence...", "calc");
+        await delay(1400);
+
+        addLogLine(
+          "   > Exotic matter injection: 47%... 73%... 94%...",
+          "scrap"
+        );
+        await delay(1200);
+
+        addLogLine("🔥 WORMHOLE ACTIVE - Beginning transit...", "glow");
+        await delay(1500);
+
+        addLogLine("   > Traversing Einstein-Rosen bridge...", "");
+        addLogLine("   > timeline_threads: weaving...", "scrap");
+        await delay(1800);
+
+        addLogLine(`⏰ Approaching target year ${targetYear}...`, "success");
+        await delay(2000);
+      }
+
+      async function endOfWorldReveal() {
+        wormhole.classList.add("speed-up");
+        glitchFlash();
+
+        addLogLine("⚠️  CRITICAL ERROR: Temporal paradox detected!", "danger");
+        await delay(1200);
+
+        addLogLine("🔍 Running emergency timeline diagnostics...", "");
+        await delay(1000);
+
+        addLogLine("   > scanning_causality_violations...", "scrap");
+        addLogLine("   > checking_grandfather_paradox...", "scrap");
+        addLogLine("   > validating_bootstrap_paradox...", "scrap");
+        await delay(1500);
+
+        addLogLine("📊 Cross-referencing with universal constants...", "calc");
+        await delay(1200);
+
+        addLogLine("   > planck_constant: 6.626×10⁻³⁴ J⋅s", "scrap");
+        addLogLine("   > speed_of_light: 299,792,458 m/s", "scrap");
+        addLogLine("   > universe_age: 13.787±0.020 billion years", "scrap");
+        await delay(1800);
+
+        addLogLine(
+          "🔴 FATAL DISCOVERY: Timeline termination event detected!",
+          "danger"
+        );
+        await delay(1500);
+
+        addLogLine("💀 APOCALYPSE CALCULATION COMPLETE:", "danger");
+        await delay(1000);
+
+        const big = document.createElement("div");
+        big.className = "entry glow";
+        big.style.fontSize = "18px";
+        big.style.marginTop = "10px";
+        big.style.color = "#ff4444";
+        big.textContent = "🌍 WORLD TERMINATION: 2026-03-15 14:47:33 UTC 🌍";
+        log.appendChild(big);
+        log.parentElement.scrollTop = log.parentElement.scrollHeight;
+
+        setProgress(100);
+        let drop = 99.9;
+        const dropTimer = setInterval(() => {
+          drop -= Math.random() * 8;
+          if (drop < 5) {
+            drop = 5;
+            clearInterval(dropTimer);
+            setTimeout(showFullScreenWarning, 1000);
+          }
+          setStability(drop);
+        }, 80);
+      }
+
+      function delay(ms) {
+        return new Promise((resolve) => setTimeout(resolve, ms));
+      }
+
+      async function jump() {
+        const y = parseInt(yearInput.value, 10);
+        const chosen = Number.isFinite(y) ? y : "Unknown";
+        target.textContent = chosen;
+
+        // Reset UI
+        log.innerHTML = "";
+        setProgress(0);
+        setStability(99.9);
+        wormhole.classList.remove("speed-up");
+        warningOverlay.style.display = "none";
+        document.body.classList.remove("danger-mode");
+
+        addLogLine(`🎯 Target year accepted: ${chosen}`, "glow");
+        await delay(800);
+
+        // Perform physics calculations
+        const calculations = await performTimeCalculations(chosen);
+        setProgress(30);
+
+        // Start time travel sequence
+        await startTimeTravel(chosen, calculations);
+        setProgress(85);
+
+        // Final countdown
+        let c = 3;
+        while (c >= 0) {
+          addLogLine(`⏱️  Temporal sync in T-${c}...`, "warning");
+          await delay(600);
+          c--;
+          setProgress(Math.min(95, 85 + (3 - c) * 3));
+        }
+
+        // The big reveal
+        await endOfWorldReveal();
+      }
+
+      goBtn.addEventListener("click", jump);
+      yearInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") jump();
+      });
+
+      warningOverlay.addEventListener("click", () => {
+        warningOverlay.style.display = "none";
+        document.body.classList.remove("danger-mode");
+      });
+    </script>
+  </body>
+</html>
