@@ -308,7 +308,8 @@
         );
         border: 1px solid rgba(255, 255, 255, 0.12);
         border-radius: clamp(12px, 3vw, 18px);
-        padding: clamp(12px, 3vw, 18px) clamp(12px, 3vw, 18px) clamp(16px, 4vw, 24px);
+        padding: clamp(12px, 3vw, 18px) clamp(12px, 3vw, 18px)
+          clamp(16px, 4vw, 24px);
         box-shadow: inset 0 0 60px rgba(0, 229, 255, 0.06),
           inset 0 0 120px rgba(122, 0, 255, 0.05),
           0 30px 80px rgba(0, 0, 0, 0.35);
@@ -717,37 +718,37 @@
           flex-direction: column;
           gap: 12px;
         }
-        
+
         .controls {
           width: 100%;
           justify-content: center;
         }
-        
+
         .input {
           flex: 1;
           max-width: 200px;
         }
-        
+
         .input input {
           width: 100%;
           font-size: 16px; /* Prevents zoom on iOS */
         }
-        
+
         .console {
           margin: 0;
           border-radius: 12px;
         }
-        
+
         .screen {
           height: clamp(200px, 35vh, 250px);
         }
-        
+
         .hud {
           flex-direction: column;
           gap: 8px;
           align-items: center;
         }
-        
+
         .footer {
           flex-direction: column;
           gap: 8px;
@@ -759,29 +760,29 @@
         .title {
           display: none;
         }
-        
+
         .input input::placeholder {
           font-size: 14px;
         }
-        
+
         .btn {
           padding: 10px 12px;
           font-size: 13px;
         }
-        
+
         .wormhole {
           width: clamp(150px, 50vw, 250px);
           height: clamp(150px, 50vw, 250px);
         }
-        
+
         .log {
           font-size: 11px;
         }
-        
+
         .equation {
           font-size: 10px;
         }
-        
+
         .scrap {
           font-size: 9px;
         }
@@ -792,17 +793,18 @@
         .console {
           min-height: 250px;
         }
-        
+
         .screen {
           height: 180px;
         }
-        
+
         .wormhole {
           width: 200px;
           height: 200px;
         }
-        
-        header, footer {
+
+        header,
+        footer {
           padding: 8px 12px;
         }
       }
@@ -856,7 +858,7 @@
               id="yearInput"
               type="number"
               inputmode="numeric"
-              placeholder="Enter year (e.g. 1985)"
+              placeholder="Enter year (e.g. 2035)"
             />
           </div>
           <button id="goBtn" class="btn">Initiate Jump</button>
@@ -950,6 +952,64 @@
             document.body.style.transform = "";
           }
         }, 100);
+      }
+
+      // Year validation function
+      async function validateYear(targetYear) {
+        const currentYear = 2025;
+
+        addLogLine(`🎯 Analyzing target year: ${targetYear}`, "glow");
+        await delay(800);
+
+        if (targetYear <= 2026) {
+          addLogLine("⚠️  TEMPORAL RESTRICTION DETECTED!", "warning");
+          await delay(1000);
+
+          addLogLine("📚 Consulting Chrono-Physics Handbook...", "");
+          await delay(1200);
+
+          addLogLine("   > temporal_causality_laws: ACTIVE", "scrap");
+          addLogLine("   > grandfather_paradox_prevention: ENABLED", "scrap");
+          await delay(1000);
+
+          addLogLine("🚫 ERROR: Backwards time travel is FORBIDDEN!", "danger");
+          await delay(1200);
+
+          addLogLine("   > Reason: Risk of paradox creation", "warning");
+          addLogLine("   > Minimum safe jump: Year 2027+", "warning");
+          await delay(1500);
+
+          addLogLine("💡 RECOMMENDATION: Choose a year after 2027", "success");
+          addLogLine("   Future travel is safer for timeline integrity.", "");
+          await delay(1000);
+
+          addLogLine(
+            "🔄 Operation CANCELLED. Please enter a valid future year.",
+            "danger"
+          );
+
+          // Reset progress and stop
+          setProgress(0);
+          return false;
+        }
+
+        if (targetYear > 3000) {
+          addLogLine("⚠️  EXTREME TEMPORAL DISTANCE DETECTED!", "warning");
+          await delay(1000);
+
+          addLogLine(
+            "🌌 WARNING: Journey beyond year 3000 detected",
+            "warning"
+          );
+          addLogLine("   > Temporal drift effects may be unstable", "scrap");
+          addLogLine("   > Recommend staying within 1000-year range", "scrap");
+          await delay(1500);
+
+          addLogLine("⚡ Continuing with EXPERIMENTAL protocols...", "warning");
+          await delay(1000);
+        }
+
+        return true;
       }
 
       async function performTimeCalculations(targetYear) {
@@ -1167,19 +1227,32 @@
 
       async function jump() {
         const y = parseInt(yearInput.value, 10);
-        const chosen = Number.isFinite(y) ? y : "Unknown";
-        target.textContent = chosen;
+        const chosen = Number.isFinite(y) ? y : null;
 
-        // Reset UI
+        // Reset UI first
         log.innerHTML = "";
         setProgress(0);
         setStability(99.9);
         wormhole.classList.remove("speed-up");
         warningOverlay.style.display = "none";
         document.body.classList.remove("danger-mode");
+        target.textContent = chosen || "--";
 
-        addLogLine(`🎯 Target year accepted: ${chosen}`, "glow");
-        await delay(800);
+        // Handle invalid input
+        if (!chosen) {
+          addLogLine("❌ INVALID INPUT: Please enter a valid year", "danger");
+          await delay(1000);
+          addLogLine("💡 Example: 2035, 2050, 2100...", "");
+          return;
+        }
+
+        // Validate the year first
+        const isValidYear = await validateYear(chosen);
+        if (!isValidYear) {
+          return; // Stop execution if year is invalid
+        }
+
+        setProgress(10);
 
         // Perform physics calculations
         const calculations = await performTimeCalculations(chosen);
@@ -1198,7 +1271,7 @@
           setProgress(Math.min(95, 85 + (3 - c) * 3));
         }
 
-        // The big reveal
+        // The big reveal (only if we made it this far)
         await endOfWorldReveal();
       }
 
